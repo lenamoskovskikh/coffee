@@ -83,7 +83,7 @@ class Ui_MainWindow2(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "id"))
-        self.pushButton.setText(_translate("MainWindow", "удалить"))
+        self.pushButton.setText(_translate("MainWindow", "редактировать"))
         self.label_2.setText(_translate("MainWindow", "sort"))
         self.label_3.setText(_translate("MainWindow", "roast"))
         self.label_4.setText(_translate("MainWindow", "type"))
@@ -161,18 +161,35 @@ class SecondWindow(QMainWindow, Ui_MainWindow2):
         self.setupUi(self)
         self.con = sqlite3.connect('coffee.db')
         self.cur = self.con.cursor()
-        self.label_8.setText('для удаления введите только id/для добавления все, роме id')
+        self.label_8.setText('для добавления все, кроме id') #для изменения нужно ввести id уже существующей записи, а далее новую информацию
         self.pushButton.clicked.connect(self.delete)
         self.pushButton_2.clicked.connect(self.add)
 
     def delete(self):
         self.label_8.setText('')
         id = self.lineEdit.text()
+        sort = self.lineEdit_2.text()
+        roast = self.lineEdit_3.text()
+        type = self.lineEdit_4.text()
+        taste = self.lineEdit_5.text()
+        price = self.lineEdit_6.text()
+        amount = self.lineEdit_7.text()
         try:
             self.cur.execute(
-                f"""DELETE from type WHERE id = {int(id)}""")
+                f"""UPDATE type SET sort = '{sort}' WHERE id = {int(id)}""")
+            self.cur.execute(
+                f"""UPDATE type SET roast = '{roast}' WHERE id = {int(id)}""")
+            self.cur.execute(
+                f"""UPDATE type SET type = '{type}' WHERE id = {int(id)}""")
+            self.cur.execute(
+                f"""UPDATE type SET taste = '{taste}' WHERE id = {int(id)}""")
+            self.cur.execute(
+                f"""UPDATE type SET price = '{int(price)}' WHERE id = {int(id)}""")
+            self.cur.execute(
+                f"""UPDATE type SET price = '{int(amount)}' WHERE id = {int(id)}""")
         except Exception:
-            self.label_8.setText('неверный ввод')
+            self.label_8.setText('Неверно заполнена форма')
+            return
         self.con.commit()
         self.con.close()
         Widget.new(a)
